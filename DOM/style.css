@@ -1,0 +1,24 @@
+#heading1{
+    text-shadow: 0cqi 0 0.1em #ababab;
+    color: #7c3131;
+    font-size: 2em;
+    font-weight: 1000;
+}
+body{
+    background-color: #e0afd6;
+}
+.para{
+    color: #ffffff;
+    font-size: 1.5em;
+    
+}
+.box{
+    background-color: #f0f0f0;
+    border: 1px solid #000000;
+    padding: 10px;
+    margin: 10px;
+    width:100px;
+    text-align: center;
+    border-radius: 10px;
+    height: 75px;
+}
