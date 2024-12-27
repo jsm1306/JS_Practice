@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rotating Robot Cube</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three/examples/js/geometries/RoundedBoxGeometry.js"></script>
+    <script>
+        // Scene, Camera, Renderer
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor(0xffffff); // White background
+        document.body.appendChild(renderer.domElement);
+
+        // Lights for shiny effect
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.85); // Soft white light
+        scene.add(ambientLight);
+
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
+        directionalLight.position.set(5, 5, 5);
+        scene.add(directionalLight);
+
+        // Rounded Cube (Robot Head)
+        const cubeGeometry = new THREE.RoundedBoxGeometry(2, 2, 2, 10, 0.2); // Rounded edges
+        const cubeMaterial = new THREE.MeshStandardMaterial({
+            color: 0xff00ff, // Pink
+            metalness: 0.3, // Shiny effect
+            roughness: 0.4  // Glossy effect
+        });
+        const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+        scene.add(cube);
+
+        // Rounded rectangle for the face
+        const shape = new THREE.Shape();
+        const width = 1.5, height = 1.5, radius = 0.2;
+        shape.moveTo(-width / 2 + radius, -height / 2);
+        shape.lineTo(width / 2 - radius, -height / 2);
+        shape.quadraticCurveTo(width / 2, -height / 2, width / 2, -height / 2 + radius);
+        shape.lineTo(width / 2, height / 2 - radius);
+        shape.quadraticCurveTo(width / 2, height / 2, width / 2 - radius, height / 2);
+        shape.lineTo(-width / 2 + radius, height / 2);
+        shape.quadraticCurveTo(-width / 2, height / 2, -width / 2, height / 2 - radius);
+        shape.lineTo(-width / 2, -height / 2 + radius);
+        shape.quadraticCurveTo(-width / 2, -height / 2, -width / 2 + radius, -height / 2);
+
+        const faceGeometry = new THREE.ShapeGeometry(shape);
+        const faceMaterial = new THREE.MeshStandardMaterial({ color: 0x000000 });
+        const face = new THREE.Mesh(faceGeometry, faceMaterial);
+        face.position.set(0, 0, 1.01); // Position on the front face
+        cube.add(face);
+
+        // Eyes (white spheres)
+        const eyeGeometry = new THREE.SphereGeometry(0.14, 32, 32);
+        const eyeMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
+
+        const leftEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
+        leftEye.position.set(-0.4, 0.1, 1.1); // Positioning on the front face
+        cube.add(leftEye);
+
+        const rightEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
+        rightEye.position.set(0.4, 0.1, 1.1); // Positioning on the front face
+        cube.add(rightEye);
+
+        // Ears (shorter pink cylinders)
+        const earGeometry = new THREE.CylinderGeometry(0.2, 0.2, 0.5, 32);
+        const earMaterial = new THREE.MeshStandardMaterial({
+            color: 0xff00ff,
+            metalness: 0.3,
+            roughness: 0.4
+        });
+
+        const leftEar = new THREE.Mesh(earGeometry, earMaterial);
+        leftEar.rotation.z = Math.PI / 2; // Rotate to align horizontally
+        leftEar.position.set(-1.2, 0, 0); // Left side
+        cube.add(leftEar);
+
+        const rightEar = new THREE.Mesh(earGeometry, earMaterial);
+        rightEar.rotation.z = Math.PI / 2; // Rotate to align horizontally
+        rightEar.position.set(1.2, 0, 0); // Right side
+        cube.add(rightEar);
+
+        // Camera position
+        camera.position.z = 5;
+
+        // Mouse movement logic
+        const mouse = { x: 0, y: 0 };
+        window.addEventListener("mousemove", (event) => {
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        });
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Rotate the entire scene
+            scene.rotation.x = mouse.y * Math.PI / 4;
+            scene.rotation.y = mouse.x * Math.PI / 4;
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+    </script>
+</body>
+</html>

@@ -80,3 +80,10 @@ let productarray = array2.reduce((acc,val)=>{
     return acc*val;
 })
 console.log("Product of the array is: ",productarray)
+
+
+function ask(greetings,yes,no){
+    if(confirm(greetings)) yes()
+    else no()
+}
+ask("hi",()=>console.log("success"),()=>console.log("failure"))
